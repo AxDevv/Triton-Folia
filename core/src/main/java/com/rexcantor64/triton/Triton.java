@@ -107,15 +107,12 @@ public abstract class Triton<P extends TritonLanguagePlayer<?>, B extends Bridge
         configYAML = loadYAML("config", getConfigFileName());
         config.setup();
 
-        if (config.isUsePacketEvents()) {
-            val dependencyManager = Triton.get().getLoader().getDependencyManager();
-            val isPacketEventsVendored = dependencyManager.hasLoaderFlag(LoaderFlag.VENDOR_PACKET_EVENTS);
-            if (isPacketEventsVendored) {
-                // load packet events dependency (netty and platform related modules are loaded later)
-                dependencyManager.loadDependency(Dependency.PACKET_EVENTS_API);
-            }
-            this.initPacketEventsManager();
+        val dependencyManager = Triton.get().getLoader().getDependencyManager();
+        val isPacketEventsVendored = dependencyManager.hasLoaderFlag(LoaderFlag.VENDOR_PACKET_EVENTS);
+        if (isPacketEventsVendored) {
+            dependencyManager.loadDependency(Dependency.PACKET_EVENTS_API);
         }
+        this.initPacketEventsManager();
 
         if (this.packetEventsManager != null) {
             this.packetEventsManager.onLoad();

@@ -150,18 +150,7 @@ public class VelocityLanguagePlayer extends TritonLanguagePlayer<Player> {
     }
 
     public void injectNettyPipeline() {
-        if (Triton.get().getConfig().isUsePacketEvents()) {
-            // PacketEvents handler covers all packets translated by Velocity,
-            // so no need to inject ourselves into netty anymore.
-            Triton.get().getLogger().logDebug("Skipped injecting into netty pipeline for player %1 because PacketEvents is in use", getUUID());
-            return;
-        }
-        val player = this.getPlatformPlayer();
-        player.ifPresent(parent -> {
-            ConnectedPlayer connectedPlayer = (ConnectedPlayer) parent;
-            connectedPlayer.getConnection().getChannel().pipeline()
-                    .addAfter(Connections.MINECRAFT_ENCODER, "triton-custom-encoder", new VelocityNettyEncoder(this));
-        });
+        Triton.get().getLogger().logDebug("Skipped injecting into netty pipeline for player %1 because PacketEvents is in use", getUUID());
     }
 
     @Override

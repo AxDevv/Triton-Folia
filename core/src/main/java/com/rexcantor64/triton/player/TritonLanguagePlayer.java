@@ -17,9 +17,7 @@ public abstract class TritonLanguagePlayer<P> implements LanguagePlayer {
     private PacketEventsRefresh packetEventsRefresh;
 
     protected TritonLanguagePlayer() {
-        if (Triton.get().getConfig().isUsePacketEvents()) {
-            this.packetEventsRefresh = new PacketEventsRefresh(this);
-        }
+        this.packetEventsRefresh = new PacketEventsRefresh(this);
     }
 
     public abstract boolean isWaitingForClientLocale();

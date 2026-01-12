@@ -6,5 +6,4 @@ group = 'com.rexcantor64.triton'
 
 dependencies {
     compileOnly libs.spigot.legacy
-    compileOnly libs.protocollib
 }

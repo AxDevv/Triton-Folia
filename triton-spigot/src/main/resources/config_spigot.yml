@@ -125,19 +125,6 @@ storage:
     #  useSSL: false
     #  verifyServerCertificate: false
 
-# EXPERIMENTAL: Intercept and parse ProtocolLib packets asynchronously.
-# This might cause incompatibilities with other plugins.
-# When stable, this will be enabled by default.
-# Changing this REQUIRES a server restart.
-experimental-async-protocol-lib: false
-
-# EXPERIMENTAL: Use PacketEvents for intercepting packets.
-# Some packets that have not been migrated might still use the legacy
-# method of interception.
-# When stable, this will be enabled by default.
-# Changing this REQUIRES a server restart.
-experimental-use-packetevents: false
-
 # Parser to use when translating messages.
 # If you change this, styles might not be applied correctly to your translations and surrounding text.
 # Available values:

@@ -1,9 +1,5 @@
 package com.rexcantor64.triton.spigot.player;
 
-import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.comphenix.protocol.wrappers.MinecraftKey;
-import com.comphenix.protocol.wrappers.WrappedNumberFormat;
-import com.comphenix.protocol.wrappers.nbt.NbtCompound;
 import com.rexcantor64.triton.Triton;
 import com.rexcantor64.triton.api.events.PlayerChangeLanguageSpigotEvent;
 import com.rexcantor64.triton.api.language.Language;
@@ -83,7 +79,7 @@ public class SpigotLanguagePlayer extends TritonLanguagePlayer<Player> {
         load();
     }
 
-    public void setScoreboardObjective(String name, String chatJson, EnumWrappers.RenderType type, @Nullable WrappedNumberFormat numberFormat) {
+    public void setScoreboardObjective(String name, String chatJson, Object type, @Nullable Object numberFormat) {
         ScoreboardObjective objective = this.objectivesMap.computeIfAbsent(name, k -> new ScoreboardObjective());
         objective.setChatJson(chatJson);
         objective.setType(type);
@@ -102,7 +98,7 @@ public class SpigotLanguagePlayer extends TritonLanguagePlayer<Player> {
         this.teamsMap.remove(name);
     }
 
-    public void saveSign(SignLocation location, MinecraftKey tileEntityType, NbtCompound nbtCompound) {
+    public void saveSign(SignLocation location, Object tileEntityType, Object nbtCompound) {
         this.signs.put(location, new Sign(tileEntityType, nbtCompound));
     }
 
@@ -297,9 +293,9 @@ public class SpigotLanguagePlayer extends TritonLanguagePlayer<Player> {
     @Data
     public static class ScoreboardObjective {
         private String chatJson;
-        private EnumWrappers.RenderType type;
+        private Object type;
         @Nullable
-        private WrappedNumberFormat numberFormat;
+        private Object numberFormat;
     }
 
     @Data
@@ -309,17 +305,17 @@ public class SpigotLanguagePlayer extends TritonLanguagePlayer<Player> {
         private String prefixJson;
         private String suffixJson;
 
-        // other data (has to be saved for refreshing packet)
-        private Object nameTagVisibility; // object since type has changed on ProtocolLib #743
-        private Object collisionRule; // object since type has changed on ProtocolLib #743
-        private EnumWrappers.ChatFormatting color;
+        private Object nameTagVisibility;
+        private Object collisionRule;
+        private Object color;
         private int options;
     }
 
     @Data
+    @AllArgsConstructor
     public static class Sign {
-        private final MinecraftKey tileEntityType;
-        private final NbtCompound compound;
+        private final Object tileEntityType;
+        private final Object compound;
     }
 
 }

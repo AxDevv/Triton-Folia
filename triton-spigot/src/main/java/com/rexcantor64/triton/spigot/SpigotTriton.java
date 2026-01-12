@@ -11,7 +11,6 @@ import com.rexcantor64.triton.spigot.guiapi.GuiButton;
 import com.rexcantor64.triton.spigot.guiapi.GuiManager;
 import com.rexcantor64.triton.spigot.guiapi.ScrollableGui;
 import com.rexcantor64.triton.spigot.listeners.BukkitListener;
-import com.rexcantor64.triton.spigot.packetinterceptor.ProtocolLibManager;
 import com.rexcantor64.triton.spigot.packetinterceptor.ProtocolLibRefresher;
 import com.rexcantor64.triton.spigot.packetinterceptor.SpigotPacketEventsManager;
 import com.rexcantor64.triton.spigot.placeholderapi.TritonPlaceholderHook;
@@ -45,8 +44,6 @@ import java.util.concurrent.TimeUnit;
 public class SpigotTriton extends Triton<SpigotLanguagePlayer, SpigotBridgeManager> {
 
     @Getter
-    private @Nullable ProtocolLibRefresher protocolLibRefresher;
-    @Getter
     private MaterialWrapperManager wrapperManager;
     @Getter
     private SpigotCommandHandler commandHandler;
@@ -78,15 +75,6 @@ public class SpigotTriton extends Triton<SpigotLanguagePlayer, SpigotBridgeManag
     @Override
     public void onEnable() {
         super.onEnable();
-
-        if (!this.getConfig().isUsePacketEvents()) {
-            if (!ProtocolLibManager.isProtocolLibAvailable()) {
-                getLogger().logError("Shutting down...");
-                Bukkit.getPluginManager().disablePlugin(getJavaPlugin());
-                return;
-            }
-            this.protocolLibRefresher = ProtocolLibManager.registerProtocolLibListeners();
-        }
 
         Metrics metrics = new Metrics(getJavaPlugin(), 5606);
         metrics.addCustomChart(new SingleLineChart("active_placeholders",
@@ -151,6 +139,10 @@ public class SpigotTriton extends Triton<SpigotLanguagePlayer, SpigotBridgeManag
     @Override
     protected void initPacketEventsManager() {
         this.packetEventsManager = new SpigotPacketEventsManager();
+    }
+
+    public @Nullable ProtocolLibRefresher getProtocolLibRefresher() {
+        return null;
     }
 
     @Override

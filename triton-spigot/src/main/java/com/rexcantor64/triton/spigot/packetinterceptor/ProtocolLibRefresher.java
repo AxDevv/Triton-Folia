@@ -1,25 +1,29 @@
 package com.rexcantor64.triton.spigot.packetinterceptor;
 
-import com.rexcantor64.triton.language.item.SignLocation;
 import com.rexcantor64.triton.spigot.player.SpigotLanguagePlayer;
+import lombok.val;
 import net.kyori.adventure.text.Component;
-import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public interface ProtocolLibRefresher {
+public class ProtocolLibRefresher {
 
-    void refreshSigns(SpigotLanguagePlayer player);
+    public void refreshTabHeaderFooter(SpigotLanguagePlayer player, Component header, Component footer) {
+    }
 
-    void refreshEntities(SpigotLanguagePlayer player);
+    public void refreshBossbar(SpigotLanguagePlayer player, UUID uuid, String json) {
+    }
 
-    void refreshTabHeaderFooter(SpigotLanguagePlayer player, Component header, Component footer);
+    public void refreshScoreboard(SpigotLanguagePlayer player) {
+    }
 
-    void refreshBossbar(SpigotLanguagePlayer player, UUID uuid, String json);
+    public void refreshAdvancements(SpigotLanguagePlayer player) {
+    }
 
-    void refreshScoreboard(SpigotLanguagePlayer player);
+    public void refreshSigns(SpigotLanguagePlayer player) {
+    }
 
-    void refreshAdvancements(SpigotLanguagePlayer languagePlayer);
-
-    void resetSign(Player p, SignLocation location);
+    public void refreshEntities(SpigotLanguagePlayer player) {
+    }
 }

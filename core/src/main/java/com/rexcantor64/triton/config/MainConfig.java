@@ -97,8 +97,6 @@ public class MainConfig implements TritonConfig {
     private boolean terminalAnsi;
     private boolean preventPlaceholdersInChat;
     private int maxPlaceholdersInMessage;
-    private boolean asyncProtocolLib;
-    private boolean usePacketEvents;
 
     private String storageType = "local";
     private String serverName;
@@ -183,8 +181,6 @@ public class MainConfig implements TritonConfig {
         this.alwaysCheckClientLocale = section.getBoolean("force-client-locale-on-join", false);
         this.logLevel = section.getInt("log-level", 0);
         this.configAutoRefresh = section.getInt("config-auto-refresh-interval", -1);
-        this.asyncProtocolLib = section.getBoolean("experimental-async-protocol-lib", false);
-        this.usePacketEvents = section.getBoolean("experimental-use-packetevents", false);
         this.parser = section.getString("message-parser", "adventure");
         Configuration languageCreation = section.getSection("language-creation");
         setupLanguageCreation(languageCreation);

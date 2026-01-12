@@ -37,11 +37,8 @@ public class BungeeListener implements Listener {
         BungeeTriton.asBungee().getBridgeManager().sendPlayerLanguage(lp, event.getServer());
 
         if (event.getPlayer().getPendingConnection().getVersion() >= ProtocolConstants.MINECRAFT_1_20_2) {
-            // On 1.20.2 and above, the join player packet starts clearing bossbars automatically, so clear them here
             lp.clearCachedBossbars();
-            if (Triton.get().getConfig().isUsePacketEvents()) {
-                lp.getPacketEventsRefresh().discardAllBossBars();
-            }
+            lp.getPacketEventsRefresh().discardAllBossBars();
         }
 
         if (Triton.get().getConfig().isRunLanguageCommandsOnLogin()) {

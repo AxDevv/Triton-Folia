@@ -9,9 +9,6 @@ String pluginAuthor = project.property("pluginAuthor")
 String pluginApiVersion = project.property("pluginApiVersion")
 String pluginName = project.property("pluginName")
 
-// Plugins that also hook into ProtocolLib and therefore have to be loaded before Triton
-List conflictingPlugins = ['Citizens']
-
 apply plugin: 'de.eldoria.plugin-yml.bukkit'
 group = 'com.rexcantor64.triton'
 
@@ -30,7 +27,7 @@ bukkit {
     apiVersion = pluginApiVersion
 
     depend = []
-    softDepend = ['ProtocolLib', 'PlaceholderAPI'] + conflictingPlugins
+    softDepend = ['PlaceholderAPI']
 
     commands {
         twin {

@@ -53,11 +53,8 @@ public class VelocityListener {
             VelocityTriton.asVelocity().getBridgeManager().sendPlayerLanguage(lp);
 
             if (lp.getProtocolVersion().noLessThan(ProtocolVersion.MINECRAFT_1_20_2)) {
-                // On 1.20.2 and above, the join player packet starts clearing bossbars automatically, so clear them here
                 lp.clearCachedBossbars();
-                if (Triton.get().getConfig().isUsePacketEvents()) {
-                    lp.getPacketEventsRefresh().discardAllBossBars();
-                }
+                lp.getPacketEventsRefresh().discardAllBossBars();
             }
 
             if (Triton.get().getConf().isRunLanguageCommandsOnLogin()) {

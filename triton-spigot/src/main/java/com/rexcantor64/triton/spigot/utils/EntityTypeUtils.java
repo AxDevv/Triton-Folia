@@ -1,90 +1,20 @@
 package com.rexcantor64.triton.spigot.utils;
 
-import com.comphenix.protocol.utility.MinecraftReflection;
-import com.comphenix.protocol.utility.MinecraftVersion;
-import com.rexcantor64.triton.Triton;
 import com.rexcantor64.triton.api.wrappers.EntityType;
-import lombok.SneakyThrows;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class EntityTypeUtils {
 
-    private static Method registryGetTypeByNumericIdMethod = null;
-    private static Method registryGetMinecraftKeyByTypeMethod = null;
-    private static Object entityTypeRegistry = null;
-    private static final HashMap<Integer, EntityType> cache = new HashMap<>();
-
     public static EntityType getEntityTypeById(int id) {
-        if (!cache.containsKey(id))
-            cache.put(id, getEntityTypeByIdNoCache(id));
-        return cache.get(id);
-    }
-
-    private static EntityType getEntityTypeByIdNoCache(int id) {
-        try {
-            if (MinecraftVersion.AQUATIC_UPDATE.atOrAbove()) { // 1.13+
-                calculateEntityRegistrySet();
-
-                Object type = registryGetTypeByNumericIdMethod.invoke(entityTypeRegistry, id);
-                Object minecraftKey = registryGetMinecraftKeyByTypeMethod.invoke(entityTypeRegistry, type);
-                return EntityType.fromBukkit(org.bukkit.entity.EntityType.fromName(minecraftKey.toString()
-                        .replace("minecraft:", "")));
-            }
-            return EntityType.fromBukkit(org.bukkit.entity.EntityType.fromId(id));
-        } catch (Exception e) {
-            Triton.get().getLogger().logError(e, "Failed to get the EntityType from the type id. Is the plugin up to date?");
-        }
-        return EntityType.UNKNOWN;
+        org.bukkit.entity.EntityType bukkitType = org.bukkit.entity.EntityType.values().length > id
+                ? org.bukkit.entity.EntityType.values()[id]
+                : null;
+        return EntityType.fromBukkit(bukkitType);
     }
 
     public static EntityType getEntityTypeByObjectId(int id) {
         for (ObjectIds obj : ObjectIds.values())
             if (obj.id == id) return obj.entityType;
         return EntityType.UNKNOWN;
-    }
-
-    @SneakyThrows
-    private static void calculateEntityRegistrySet() {
-        if (EntityTypeUtils.entityTypeRegistry != null) return;
-
-        Class<?> iRegistry = MinecraftReflection.getIRegistry();
-        Class<?> minecraftKeyClass = MinecraftReflection.getMinecraftKeyClass();
-        Class<?> registryBlocksClass = MinecraftReflection.getMinecraftClass("core.RegistryBlocks", "RegistryBlocks");
-        Class<?> entityTypesClass = MinecraftReflection.getEntityTypes();
-
-        Object entityTypeRegistry = Arrays.stream(iRegistry.getFields())
-                .filter(field -> {
-                    // 1.13-1.16 uses IRegistry as type, 1.17+ uses RegistryBlocks as type
-                    if (field.getType().equals(registryBlocksClass) || field.getType().equals(iRegistry)) {
-                        ParameterizedType type = (ParameterizedType) field.getGenericType();
-                        Type[] actualTypes = type.getActualTypeArguments();
-                        if (actualTypes.length == 1 && actualTypes[0] instanceof ParameterizedType) {
-                            return ((ParameterizedType) actualTypes[0]).getRawType().equals(entityTypesClass);
-                        }
-                    }
-                    return false;
-                })
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("Could not get EntityTypes registry. Incompatible Minecraft version."))
-                .get(null);
-
-        registryGetMinecraftKeyByTypeMethod = Arrays.stream(entityTypeRegistry.getClass().getMethods())
-                .filter(method -> minecraftKeyClass.equals(method.getReturnType()) && method.getParameterCount() == 1)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Could not get RegistryBlocks<EntityType>'s key set"));
-
-        registryGetTypeByNumericIdMethod = Arrays.stream(entityTypeRegistry.getClass().getMethods())
-                .filter(method -> method.getParameterCount() == 1 && method.getParameterTypes()[0].equals(int.class))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Could not get entity numeric id to entity type method"));
-
-        EntityTypeUtils.entityTypeRegistry = entityTypeRegistry;
-
     }
 
     private enum ObjectIds {
