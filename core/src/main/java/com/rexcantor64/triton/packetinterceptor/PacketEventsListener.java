@@ -8,14 +8,17 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.rexcantor64.triton.Triton;
 import com.rexcantor64.triton.packetinterceptor.handlers.ActionBarPacketHandler;
+import com.rexcantor64.triton.packetinterceptor.handlers.AdvancementsPacketHandler;
 import com.rexcantor64.triton.packetinterceptor.handlers.BossBarPacketHandler;
 import com.rexcantor64.triton.packetinterceptor.handlers.ChatPacketHandler;
 import com.rexcantor64.triton.packetinterceptor.handlers.DeathScreenPacketHandler;
 import com.rexcantor64.triton.packetinterceptor.handlers.DisconnectPacketHandler;
 import com.rexcantor64.triton.packetinterceptor.handlers.EntityPacketHandler;
 import com.rexcantor64.triton.packetinterceptor.handlers.GuiPacketHandler;
+import com.rexcantor64.triton.packetinterceptor.handlers.MotdPacketHandler;
 import com.rexcantor64.triton.packetinterceptor.handlers.ResourcePackPacketHandler;
 import com.rexcantor64.triton.packetinterceptor.handlers.ScoreboardPacketHandler;
+import com.rexcantor64.triton.packetinterceptor.handlers.SignPacketHandler;
 import com.rexcantor64.triton.packetinterceptor.handlers.TabPacketHandler;
 import com.rexcantor64.triton.packetinterceptor.handlers.TitlePacketHandler;
 import com.rexcantor64.triton.player.TritonLanguagePlayer;
@@ -139,6 +142,18 @@ public class PacketEventsListener implements PacketListener {
             }
 
             updatedHandlers.put(PacketType.Play.Server.JOIN_GAME, entityHandler::onJoinGame);
+        }
+        if (config.isAdvancements()) {
+            val advancementsHandler = new AdvancementsPacketHandler(parser, config);
+            updatedHandlers.put(PacketType.Play.Server.UPDATE_ADVANCEMENTS, advancementsHandler::onUpdateAdvancementsPacket);
+        }
+        if (config.isSigns()) {
+            val signHandler = new SignPacketHandler(parser, config);
+            updatedHandlers.put(PacketType.Play.Server.BLOCK_ENTITY_DATA, signHandler::onBlockEntityDataPacket);
+        }
+        if (config.isMotd()) {
+            val motdHandler = new MotdPacketHandler(parser, config);
+            updatedHandlers.put(PacketType.Status.Server.RESPONSE, motdHandler::onServerInfoPacket);
         }
 
         receiveHandlers = Collections.unmodifiableMap(updatedHandlers);
