@@ -6,4 +6,5 @@ description: "A plugin that replaces any message on your server, to the receiver
 author: Rexcantor64
 website: https://triton.rexcantor64.com/
 softdepend: [PlaceholderAPI]
+depend: [packetevents]
 folia-supported: true
