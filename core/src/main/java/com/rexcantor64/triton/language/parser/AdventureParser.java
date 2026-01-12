@@ -76,6 +76,12 @@ public class AdventureParser extends MessageParser {
      */
     @Override
     public @NotNull TranslationResult<Component> translateComponent(@NotNull Component component, @NotNull Localized language, @NotNull FeatureSyntax syntax) {
+        val plainText = ComponentUtils.componentToString(component);
+        String papiText = Triton.get().applyPAPIPlaceholders(plainText, language);
+        if (!papiText.equals(plainText)) {
+            component = ComponentUtils.deserializeFromLegacy(papiText);
+        }
+
         val configuration = new TranslationConfiguration<Component>(
                 syntax,
                 Triton.get().getConfig().getDisabledLine(),

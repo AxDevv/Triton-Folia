@@ -113,6 +113,11 @@ public class LegacyParser extends MessageParser {
             @NotNull Localized language,
             @NotNull FeatureSyntax syntax
     ) {
+        String papiText = Triton.get().applyPAPIPlaceholders(component.getText(), language);
+        if (!papiText.equals(component.getText())) {
+            component = new SerializedComponent(papiText);
+        }
+
         val configuration = new TranslationConfiguration<SerializedComponent>(
                 syntax,
                 Triton.get().getConfig().getDisabledLine(),

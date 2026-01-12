@@ -234,4 +234,8 @@ public abstract class Triton<P extends TritonLanguagePlayer<?>, B extends Bridge
 
     public abstract UUID getPlayerUUIDFromString(String input);
 
+    public String applyPAPIPlaceholders(String text, com.rexcantor64.triton.api.language.Localized localized) {
+        return text;
+    }
+
 }

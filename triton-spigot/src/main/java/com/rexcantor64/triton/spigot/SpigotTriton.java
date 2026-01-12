@@ -255,6 +255,26 @@ public class SpigotTriton extends Triton<SpigotLanguagePlayer, SpigotBridgeManag
         }
     }
 
+    @Override
+    public String applyPAPIPlaceholders(String text, com.rexcantor64.triton.api.language.Localized localized) {
+        if (!papiEnabled) {
+            return text;
+        }
+        if (!(localized instanceof com.rexcantor64.triton.api.players.LanguagePlayer)) {
+            return text;
+        }
+        com.rexcantor64.triton.api.players.LanguagePlayer languagePlayer = (com.rexcantor64.triton.api.players.LanguagePlayer) localized;
+        UUID uuid = languagePlayer.getUUID();
+        if (uuid == null) {
+            return text;
+        }
+        org.bukkit.entity.Player player = Bukkit.getPlayer(uuid);
+        if (player == null) {
+            return text;
+        }
+        return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text);
+    }
+
     /**
      * Use reflection to check if this Spigot server has "bungeecord" mode enabled on spigot.yml.
      * This is used to show a warning if Spigot is in proxy mode, but the server is not.
