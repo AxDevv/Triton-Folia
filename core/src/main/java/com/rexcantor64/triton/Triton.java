@@ -194,6 +194,8 @@ public abstract class Triton<P extends TritonLanguagePlayer<?>, B extends Bridge
 
     public abstract void runAsync(Runnable runnable);
 
+    public abstract void runSync(Runnable runnable);
+
     public abstract File getDataFolder();
 
     /**

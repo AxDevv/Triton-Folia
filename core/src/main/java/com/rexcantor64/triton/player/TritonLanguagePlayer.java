@@ -28,7 +28,7 @@ public abstract class TritonLanguagePlayer<P> implements LanguagePlayer {
 
     public void refreshAll() {
         if (packetEventsRefresh != null) {
-            Triton.get().runAsync(() -> packetEventsRefresh.refreshAll());
+            Triton.get().runSync(() -> packetEventsRefresh.refreshAll());
         }
     }
 

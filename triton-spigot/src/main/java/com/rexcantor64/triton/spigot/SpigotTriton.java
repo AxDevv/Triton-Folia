@@ -214,6 +214,11 @@ public class SpigotTriton extends Triton<SpigotLanguagePlayer, SpigotBridgeManag
         FoliaCompat.runAsync(getJavaPlugin(), runnable);
     }
 
+    @Override
+    public void runSync(Runnable runnable) {
+        FoliaCompat.run(getJavaPlugin(), runnable);
+    }
+
     public <T> Optional<T> callSync(Callable<T> callable) {
         try {
             if (Bukkit.getServer().isPrimaryThread()) {

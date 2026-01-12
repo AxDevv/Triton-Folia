@@ -151,6 +151,11 @@ public class BungeeTriton extends Triton<BungeeLanguagePlayer, BungeeBridgeManag
         getBungeeCord().getScheduler().runAsync(getPlugin(), runnable);
     }
 
+    @Override
+    public void runSync(Runnable runnable) {
+        getBungeeCord().getScheduler().schedule(getPlugin(), runnable, 0, java.util.concurrent.TimeUnit.MILLISECONDS);
+    }
+
     public ProxyServer getBungeeCord() {
         return getPlugin().getProxy();
     }

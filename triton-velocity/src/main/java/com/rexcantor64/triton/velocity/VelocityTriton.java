@@ -109,6 +109,11 @@ public class VelocityTriton extends Triton<VelocityLanguagePlayer, VelocityBridg
         getVelocity().getScheduler().buildTask(getPlugin(), runnable).schedule();
     }
 
+    @Override
+    public void runSync(Runnable runnable) {
+        getVelocity().getScheduler().buildTask(getPlugin(), runnable).schedule();
+    }
+
     public ProxyServer getVelocity() {
         return getLoader().getServer();
     }
