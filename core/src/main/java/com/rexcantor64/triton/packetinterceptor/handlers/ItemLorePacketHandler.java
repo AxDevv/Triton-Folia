@@ -65,10 +65,14 @@ public class ItemLorePacketHandler {
         ComponentType<Component> itemNameType = getComponentType("item_name");
         ComponentType<Component> customNameType = getComponentType("custom_name");
 
+        System.out.println("[Triton Item] item_name type: " + itemNameType + ", custom_name type: " + customNameType);
+
         if (itemNameType != null) {
             java.util.Optional<Component> nameOpt = item.getComponent(itemNameType);
+            System.out.println("[Triton Item] item_name present: " + nameOpt.isPresent());
             if (nameOpt.isPresent()) {
                 Component name = nameOpt.get();
+                System.out.println("[Triton Item] item_name: " + name);
                 TranslationResult<Component> result = parser.translateComponent(name, player, syntax);
                 if (result.isChanged()) {
                     result.getResult().ifPresent(c -> item.setComponent(itemNameType, c));
@@ -79,8 +83,10 @@ public class ItemLorePacketHandler {
 
         if (customNameType != null) {
             java.util.Optional<Component> customNameOpt = item.getComponent(customNameType);
+            System.out.println("[Triton Item] custom_name present: " + customNameOpt.isPresent());
             if (customNameOpt.isPresent()) {
                 Component name = customNameOpt.get();
+                System.out.println("[Triton Item] custom_name: " + name);
                 TranslationResult<Component> result = parser.translateComponent(name, player, syntax);
                 if (result.isChanged()) {
                     result.getResult().ifPresent(c -> item.setComponent(customNameType, c));
