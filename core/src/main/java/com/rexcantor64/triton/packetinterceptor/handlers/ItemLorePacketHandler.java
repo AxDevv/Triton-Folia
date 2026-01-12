@@ -131,4 +131,13 @@ public class ItemLorePacketHandler {
             return null;
         }
     }
+
+    static {
+        System.out.println("[Triton Item] Available ComponentTypes:");
+        for (Field field : ComponentTypes.class.getDeclaredFields()) {
+            if (java.lang.reflect.Modifier.isStatic(field.getModifiers()) && field.getType() == ComponentType.class) {
+                System.out.println("  - " + field.getName());
+            }
+        }
+    }
 }
