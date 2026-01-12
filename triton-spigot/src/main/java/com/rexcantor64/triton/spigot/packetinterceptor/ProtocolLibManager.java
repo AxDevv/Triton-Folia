@@ -4,6 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.utility.MinecraftVersion;
 import com.rexcantor64.triton.Triton;
 import com.rexcantor64.triton.spigot.SpigotTriton;
+import com.rexcantor64.triton.spigot.utils.FoliaCompat;
 import lombok.val;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +57,7 @@ public class ProtocolLibManager {
         }
 
         // Use delayed task to try to be the last registered listener and therefore have the final say in packets
-        Bukkit.getScheduler().scheduleSyncDelayedTask(triton.getJavaPlugin(), () -> {
+        FoliaCompat.runDelayed(triton.getJavaPlugin(), () -> {
             if (triton.getConfig().isAsyncProtocolLib()) {
                 val asyncManager = ProtocolLibrary.getProtocolManager().getAsynchronousManager();
                 asyncManager.registerAsyncHandler(protocolLibListener).start();

@@ -13,6 +13,7 @@ import com.comphenix.protocol.wrappers.MinecraftKey;
 import com.rexcantor64.triton.Triton;
 import com.rexcantor64.triton.api.language.Localized;
 import com.rexcantor64.triton.spigot.player.SpigotLanguagePlayer;
+import com.rexcantor64.triton.spigot.utils.FoliaCompat;
 import com.rexcantor64.triton.spigot.utils.NMSUtils;
 import com.rexcantor64.triton.spigot.utils.WrappedComponentUtils;
 import com.rexcantor64.triton.spigot.wrappers.WrappedAdvancementDisplay;
@@ -187,7 +188,7 @@ public class AdvancementsPacketHandler extends PacketHandler {
 
             val advancementDataPlayer = ENTITY_PLAYER_ADVANCEMENT_DATA_PLAYER_FIELD.get(nmsPlayer);
 
-            Bukkit.getScheduler().runTask(getMain().getJavaPlugin(), () -> {
+            FoliaCompat.runForPlayer(getMain().getJavaPlugin(), bukkitPlayer, () -> {
                 // These are the same methods that are called from org.bukkit.craftbukkit.<version>.util.CraftMagicNumbers#loadAdvancement
                 if (MinecraftVersion.NETHER_UPDATE.atOrAbove()) { // 1.16+
                     // MC 1.16+

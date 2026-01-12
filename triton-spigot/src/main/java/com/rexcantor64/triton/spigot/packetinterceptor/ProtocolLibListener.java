@@ -28,6 +28,7 @@ import com.rexcantor64.triton.language.parser.MessageParser;
 import com.rexcantor64.triton.spigot.SpigotTriton;
 import com.rexcantor64.triton.spigot.player.SpigotLanguagePlayer;
 import com.rexcantor64.triton.spigot.utils.BaseComponentUtils;
+import com.rexcantor64.triton.spigot.utils.FoliaCompat;
 import com.rexcantor64.triton.spigot.utils.ItemStackTranslationUtils;
 import com.rexcantor64.triton.spigot.utils.NMSUtils;
 import com.rexcantor64.triton.spigot.utils.WrappedComponentUtils;
@@ -906,18 +907,22 @@ public class ProtocolLibListener implements PacketListener, ProtocolLibRefresher
             return;
         }
         if (packet.getPacketType() == PacketType.Play.Client.SETTINGS) {
-            Bukkit.getScheduler().runTask(
-                    main.getJavaPlugin(),
-                    () -> languagePlayer.setLang(
-                            main.getLanguageManager()
-                                    .getLanguageByLocaleOrDefault(packet.getPacket().getStrings().readSafely(0))
+            languagePlayer.toBukkit().ifPresent(player ->
+                    FoliaCompat.runForPlayer(main.getJavaPlugin(), player,
+                            () -> languagePlayer.setLang(
+                                    main.getLanguageManager()
+                                            .getLanguageByLocaleOrDefault(packet.getPacket().getStrings().readSafely(0))
+                            )
                     )
             );
         } else if (packet.getPacketType().getProtocol() == PacketType.Protocol.CONFIGURATION) {
             val clientConfigurations = packet.getPacket().getStructures().withType(WrappedClientConfiguration.getWrappedClass(), WrappedClientConfiguration.CONVERTER);
             val locale = clientConfigurations.readSafely(0).getLocale();
             val language = main.getLanguageManager().getLanguageByLocaleOrDefault(locale);
-            Bukkit.getScheduler().runTaskLater(main.getJavaPlugin(), () -> languagePlayer.setLang(language), 2L);
+            languagePlayer.toBukkit().ifPresent(player ->
+                    FoliaCompat.runDelayedAtLocation(main.getJavaPlugin(), player.getLocation(),
+                            () -> languagePlayer.setLang(language), 2L)
+            );
         }
     }
 

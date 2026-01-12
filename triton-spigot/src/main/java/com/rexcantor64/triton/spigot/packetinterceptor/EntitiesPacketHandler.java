@@ -18,6 +18,7 @@ import com.rexcantor64.triton.player.TritonLanguagePlayer;
 import com.rexcantor64.triton.spigot.SpigotTriton;
 import com.rexcantor64.triton.spigot.player.SpigotLanguagePlayer;
 import com.rexcantor64.triton.spigot.utils.EntityTypeUtils;
+import com.rexcantor64.triton.spigot.utils.FoliaCompat;
 import com.rexcantor64.triton.spigot.utils.ItemStackTranslationUtils;
 import com.rexcantor64.triton.spigot.utils.WrappedComponentUtils;
 import com.rexcantor64.triton.utils.ComponentUtils;
@@ -771,9 +772,9 @@ public class EntitiesPacketHandler extends PacketHandler {
             }
 
             if (isHiddenEntity) {
-                // If the entity should not show up in tab, hide it again
-                Bukkit.getScheduler().runTaskLater(
+                FoliaCompat.runDelayedAtLocation(
                         getMain().getJavaPlugin(),
+                        bukkitPlayer.getLocation(),
                         () -> sendPacket(bukkitPlayer, packetRemove, true),
                         4L
                 );

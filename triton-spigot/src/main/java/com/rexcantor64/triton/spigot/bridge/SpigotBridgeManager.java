@@ -17,6 +17,7 @@ import com.rexcantor64.triton.language.item.LanguageText;
 import com.rexcantor64.triton.language.item.SignLocation;
 import com.rexcantor64.triton.spigot.SpigotTriton;
 import com.rexcantor64.triton.spigot.commands.handler.SpigotSender;
+import com.rexcantor64.triton.spigot.utils.FoliaCompat;
 import com.rexcantor64.triton.spigot.player.SpigotLanguagePlayer;
 import com.rexcantor64.triton.storage.LocalStorage;
 import lombok.val;
@@ -167,7 +168,7 @@ public class SpigotBridgeManager implements PluginMessageListener, BridgeManager
                 } finally {
                     Triton.get().getLanguageManager().setup();
                     Triton.get().getTranslationManager().setup();
-                    Bukkit.getScheduler().runTaskLater(SpigotTriton.asSpigot().getJavaPlugin(), () -> Triton.get()
+                    FoliaCompat.runDelayed(SpigotTriton.asSpigot().getJavaPlugin(), () -> Triton.get()
                             .refreshPlayers(), 10L);
                 }
             } else if (action == BridgeSerializer.ActionP2S.SEND_PLAYER_LANGUAGE.getKey()) {
@@ -176,7 +177,7 @@ public class SpigotBridgeManager implements PluginMessageListener, BridgeManager
                 val lang = Triton.get().getLanguageManager().getLanguageByNameOrDefault(in.readUTF());
                 val languagePlayer = (SpigotLanguagePlayer) SpigotTriton.asSpigot().getPlayerManager().get(player.getUniqueId());
                 languagePlayer.setProxyUniqueId(uuid);
-                Bukkit.getScheduler().runTaskLater(SpigotTriton.asSpigot().getJavaPlugin(),
+                FoliaCompat.runDelayed(SpigotTriton.asSpigot().getJavaPlugin(),
                         () -> languagePlayer.setLang(lang, false),
                         10L);
             } else if (action == BridgeSerializer.ActionP2S.SEND_COMMAND_AS_CONSOLE.getKey()) {
@@ -198,7 +199,7 @@ public class SpigotBridgeManager implements PluginMessageListener, BridgeManager
 
                     Triton.get().getLanguageManager().setup();
                     Triton.get().getTranslationManager().setup();
-                    Bukkit.getScheduler().runTaskLater(SpigotTriton.asSpigot().getJavaPlugin(), () -> Triton.get()
+                    FoliaCompat.runDelayed(SpigotTriton.asSpigot().getJavaPlugin(), () -> Triton.get()
                             .refreshPlayers(), 10L);
                 });
             } else if (action == BridgeSerializer.ActionP2S.FORWARD_TRITON_COMMAND.getKey()) {

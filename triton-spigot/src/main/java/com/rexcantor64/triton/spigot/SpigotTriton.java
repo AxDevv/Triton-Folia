@@ -17,6 +17,7 @@ import com.rexcantor64.triton.spigot.packetinterceptor.SpigotPacketEventsManager
 import com.rexcantor64.triton.spigot.placeholderapi.TritonPlaceholderHook;
 import com.rexcantor64.triton.spigot.player.SpigotLanguagePlayer;
 import com.rexcantor64.triton.spigot.plugin.SpigotPlugin;
+import com.rexcantor64.triton.spigot.utils.FoliaCompat;
 import com.rexcantor64.triton.spigot.wrappers.MaterialWrapperManager;
 import com.rexcantor64.triton.terminal.Log4jInjector;
 import com.rexcantor64.triton.utils.ReflectionUtils;
@@ -153,10 +154,21 @@ public class SpigotTriton extends Triton<SpigotLanguagePlayer, SpigotBridgeManag
 
     @Override
     protected void startConfigRefreshTask() {
-        if (refreshTaskId != -1) Bukkit.getScheduler().cancelTask(refreshTaskId);
+        if (refreshTaskId != -1) FoliaCompat.cancelTask(getJavaPlugin(), refreshTaskId);
         if (getConfig().getConfigAutoRefresh() <= 0) return;
-        refreshTaskId = Bukkit.getScheduler()
-                .scheduleSyncDelayedTask(getJavaPlugin(), this::reload, getConfig().getConfigAutoRefresh() * 20L);
+        long delayTicks = getConfig().getConfigAutoRefresh() * 20L;
+        if (FoliaCompat.isFolia()) {
+            Bukkit.getAsyncScheduler().runAtFixedRate(getJavaPlugin(), (task) -> {
+                if (!getJavaPlugin().isEnabled()) {
+                    task.cancel();
+                    return;
+                }
+                Bukkit.getGlobalRegionScheduler().execute(getJavaPlugin(), this::reload);
+            }, delayTicks / 20, delayTicks / 20, TimeUnit.SECONDS);
+        } else {
+            refreshTaskId = Bukkit.getScheduler()
+                    .scheduleSyncDelayedTask(getJavaPlugin(), this::reload, delayTicks);
+        }
     }
 
     public File getDataFolder() {
@@ -207,13 +219,23 @@ public class SpigotTriton extends Triton<SpigotLanguagePlayer, SpigotBridgeManag
 
     @Override
     public void runAsync(Runnable runnable) {
-        Bukkit.getScheduler().runTaskAsynchronously(getJavaPlugin(), runnable);
+        FoliaCompat.runAsync(getJavaPlugin(), runnable);
     }
 
     public <T> Optional<T> callSync(Callable<T> callable) {
         try {
             if (Bukkit.getServer().isPrimaryThread()) {
                 return Optional.ofNullable(callable.call());
+            }
+            if (FoliaCompat.isFolia()) {
+                Bukkit.getGlobalRegionScheduler().execute(getJavaPlugin(), () -> {
+                    try {
+                        callable.call();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                return Optional.empty();
             }
             return Optional.ofNullable(Bukkit.getScheduler().callSyncMethod(getJavaPlugin(), callable).get());
         } catch (InterruptedException | ExecutionException e) {
