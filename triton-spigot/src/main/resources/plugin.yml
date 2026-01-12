@@ -1,0 +1,9 @@
+name: Triton
+version: ${project.version}
+main: com.rexcantor64.triton.loader.SpigotLoader
+api-version: 1.13
+description: "A plugin that replaces any message on your server, to the receiver's language, in real time!"
+author: Rexcantor64
+website: https://triton.rexcantor64.com/
+softdepend: [PlaceholderAPI]
+folia-supported: true
