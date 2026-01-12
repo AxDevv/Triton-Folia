@@ -171,7 +171,9 @@ public class PacketEventsListener implements PacketListener {
 
         val handler = receiveHandlers.get(type);
         if (handler != null) {
-            val languagePlayer = Triton.get().getPlayerManager().get(event.getUser().getUUID());
+            java.util.UUID uuid = event.getUser().getUUID();
+            if (uuid == null) return;
+            val languagePlayer = Triton.get().getPlayerManager().get(uuid);
             handler.accept(event, languagePlayer);
         }
     }
