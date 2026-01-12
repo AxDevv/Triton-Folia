@@ -158,12 +158,11 @@ public class SpigotTriton extends Triton<SpigotLanguagePlayer, SpigotBridgeManag
         if (getConfig().getConfigAutoRefresh() <= 0) return;
         long delayTicks = getConfig().getConfigAutoRefresh() * 20L;
         if (FoliaCompat.isFolia()) {
-            Bukkit.getAsyncScheduler().runAtFixedRate(getJavaPlugin(), (task) -> {
+            FoliaCompat.scheduleAtFixedRateAsync(getJavaPlugin(), () -> {
                 if (!getJavaPlugin().isEnabled()) {
-                    task.cancel();
                     return;
                 }
-                Bukkit.getGlobalRegionScheduler().execute(getJavaPlugin(), this::reload);
+                FoliaCompat.executeGlobal(getJavaPlugin(), this::reload);
             }, delayTicks / 20, delayTicks / 20, TimeUnit.SECONDS);
         } else {
             refreshTaskId = Bukkit.getScheduler()
@@ -228,7 +227,7 @@ public class SpigotTriton extends Triton<SpigotLanguagePlayer, SpigotBridgeManag
                 return Optional.ofNullable(callable.call());
             }
             if (FoliaCompat.isFolia()) {
-                Bukkit.getGlobalRegionScheduler().execute(getJavaPlugin(), () -> {
+                FoliaCompat.executeGlobal(getJavaPlugin(), () -> {
                     try {
                         callable.call();
                     } catch (Exception e) {
