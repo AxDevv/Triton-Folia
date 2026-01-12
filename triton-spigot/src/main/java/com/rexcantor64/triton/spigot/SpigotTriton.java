@@ -257,30 +257,22 @@ public class SpigotTriton extends Triton<SpigotLanguagePlayer, SpigotBridgeManag
 
     @Override
     public String applyPAPIPlaceholders(String text, com.rexcantor64.triton.api.language.Localized localized) {
-        System.out.println("[Triton PAPI] applyPAPIPlaceholders called - papiEnabled: " + papiEnabled + ", text: " + text);
         if (!papiEnabled) {
             return text;
         }
         if (!(localized instanceof com.rexcantor64.triton.api.players.LanguagePlayer)) {
-            System.out.println("[Triton PAPI] Localized is not LanguagePlayer: " + localized.getClass().getName());
             return text;
         }
         com.rexcantor64.triton.api.players.LanguagePlayer languagePlayer = (com.rexcantor64.triton.api.players.LanguagePlayer) localized;
         UUID uuid = languagePlayer.getUUID();
         if (uuid == null) {
-            System.out.println("[Triton PAPI] UUID is null");
             return text;
         }
         org.bukkit.entity.Player player = Bukkit.getPlayer(uuid);
         if (player == null) {
-            System.out.println("[Triton PAPI] Player is null for UUID: " + uuid);
             return text;
         }
-        String result = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text);
-        if (!result.equals(text)) {
-            System.out.println("[Triton PAPI] Replaced: '" + text + "' -> '" + result + "'");
-        }
-        return result;
+        return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text);
     }
 
     /**
