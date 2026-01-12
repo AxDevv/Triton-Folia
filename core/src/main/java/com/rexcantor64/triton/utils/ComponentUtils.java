@@ -110,7 +110,11 @@ public class ComponentUtils {
      * @return The corresponding {@link Component}.
      */
     public static Component deserializeFromLegacy(@NotNull String message) {
-        return LEGACY_SERIALIZER.deserialize(message);
+        return LEGACY_SERIALIZER.deserialize(convertHexColors(message));
+    }
+
+    private static String convertHexColors(String message) {
+        return message.replaceAll("<#([A-Fa-f0-9]{6})\">", "&#$1");
     }
 
     /**
