@@ -59,36 +59,42 @@ public class ItemLorePacketHandler {
             return false;
         }
 
-        java.util.Optional<ItemLore> loreOpt = item.getComponent(ComponentTypes.LORE);
-        if (!loreOpt.isPresent()) {
-            return false;
-        }
-
-        ItemLore lore = loreOpt.get();
-        List<Component> lines = lore.getLines();
-        if (lines == null || lines.isEmpty()) {
-            return false;
-        }
-
-        List<Component> translatedLines = new ArrayList<Component>();
         boolean modified = false;
 
-        for (Component line : lines) {
-            TranslationResult<Component> result = parser.translateComponent(line, player, syntax);
+        java.util.Optional<Component> nameOpt = item.getComponent(ComponentTypes.ITEM_NAME);
+        if (nameOpt.isPresent()) {
+            Component name = nameOpt.get();
+            TranslationResult<Component> result = parser.translateComponent(name, player, syntax);
             if (result.isChanged()) {
-                result.getResult().ifPresent(translatedLines::add);
+                result.getResult().ifPresent(c -> item.setComponent(ComponentTypes.ITEM_NAME, c));
                 modified = true;
-            } else {
-                translatedLines.add(line);
             }
         }
 
-        if (modified) {
-            lore.setLines(translatedLines);
-            item.setComponent(ComponentTypes.LORE, lore);
-            return true;
+        java.util.Optional<ItemLore> loreOpt = item.getComponent(ComponentTypes.LORE);
+        if (loreOpt.isPresent()) {
+            ItemLore lore = loreOpt.get();
+            List<Component> lines = lore.getLines();
+            if (lines != null && !lines.isEmpty()) {
+                List<Component> translatedLines = new ArrayList<Component>();
+                boolean loreModified = false;
+                for (Component line : lines) {
+                    TranslationResult<Component> result = parser.translateComponent(line, player, syntax);
+                    if (result.isChanged()) {
+                        result.getResult().ifPresent(translatedLines::add);
+                        loreModified = true;
+                    } else {
+                        translatedLines.add(line);
+                    }
+                }
+                if (loreModified) {
+                    lore.setLines(translatedLines);
+                    item.setComponent(ComponentTypes.LORE, lore);
+                    modified = true;
+                }
+            }
         }
 
-        return false;
+        return modified;
     }
 }
