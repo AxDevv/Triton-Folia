@@ -1,6 +1,7 @@
 package com.rexcantor64.triton.packetinterceptor.handlers;
 
 import com.github.retrooper.packetevents.event.PacketSendEvent;
+import com.github.retrooper.packetevents.protocol.component.ComponentType;
 import com.github.retrooper.packetevents.protocol.component.ComponentTypes;
 import com.github.retrooper.packetevents.protocol.component.builtin.item.ItemLore;
 import com.github.retrooper.packetevents.protocol.item.ItemStack;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,14 +62,30 @@ public class ItemLorePacketHandler {
         }
 
         boolean modified = false;
+        ComponentType<Component> itemNameType = getComponentType("item_name");
+        ComponentType<Component> customNameType = getComponentType("custom_name");
 
-        java.util.Optional<Component> nameOpt = item.getComponent(ComponentTypes.ITEM_NAME);
-        if (nameOpt.isPresent()) {
-            Component name = nameOpt.get();
-            TranslationResult<Component> result = parser.translateComponent(name, player, syntax);
-            if (result.isChanged()) {
-                result.getResult().ifPresent(c -> item.setComponent(ComponentTypes.ITEM_NAME, c));
-                modified = true;
+        if (itemNameType != null) {
+            java.util.Optional<Component> nameOpt = item.getComponent(itemNameType);
+            if (nameOpt.isPresent()) {
+                Component name = nameOpt.get();
+                TranslationResult<Component> result = parser.translateComponent(name, player, syntax);
+                if (result.isChanged()) {
+                    result.getResult().ifPresent(c -> item.setComponent(itemNameType, c));
+                    modified = true;
+                }
+            }
+        }
+
+        if (customNameType != null) {
+            java.util.Optional<Component> customNameOpt = item.getComponent(customNameType);
+            if (customNameOpt.isPresent()) {
+                Component name = customNameOpt.get();
+                TranslationResult<Component> result = parser.translateComponent(name, player, syntax);
+                if (result.isChanged()) {
+                    result.getResult().ifPresent(c -> item.setComponent(customNameType, c));
+                    modified = true;
+                }
             }
         }
 
@@ -96,5 +114,15 @@ public class ItemLorePacketHandler {
         }
 
         return modified;
+    }
+
+    @SuppressWarnings("unchecked")
+    private ComponentType<Component> getComponentType(String name) {
+        try {
+            Field field = ComponentTypes.class.getField(name);
+            return (ComponentType<Component>) field.get(null);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
